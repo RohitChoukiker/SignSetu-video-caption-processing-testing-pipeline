@@ -13,7 +13,7 @@ def test_full_pipeline(client):
 
 
     res = client.post(f"/api/videos/{video_id}/process-captions")
-    assert res.status_code in 202
+    assert res.status_code == 202
 
     
     assert processing(client, video_id)

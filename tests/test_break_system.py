@@ -5,12 +5,14 @@ def test_double_processing(client):
     res = client.post("/api/videos", {"title": "test"})
     video_id = res.json()["id"]
 
-    res1 = client.post(f"/api/videos/{video_id}/process-captions")
-    res2 = client.post(f"/api/videos/{video_id}/process-captions")
+    try:
+        res1 = client.post(f"/api/videos/{video_id}/process-captions")
+        res2 = client.post(f"/api/videos/{video_id}/process-captions")
 
-    assert res2.status_code != 200, "Bug: duplicate processing allowed"
-    
-    
+        assert res2.status_code != 200, "Bug: duplicate processing allowed"
+    finally:
+        client.delete(f"/api/videos/{video_id}")
+
 def test_captions_before_processing(client):
     res = client.post("/api/videos", {"title": "test"})
     video_id = res.json()["id"]
